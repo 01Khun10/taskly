@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: taskly-db
+    environment:
+      POSTGRES_USER: taskly
+      POSTGRES_PASSWORD: taskly_pass
+      POSTGRES_DB: taskly
+    volumes:
+      - taskly-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskly -d taskly"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - taskly-net
+
+  app:
+    build: .
+    image: taskly-app:latest
+    container_name: taskly-app
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: taskly
+      DB_PASSWORD: taskly_pass
+      DB_NAME: taskly
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - taskly-net
+
+networks:
+  taskly-net:
+    name: taskly-net
+    driver: bridge
+
+volumes:
+  taskly-pgdata:

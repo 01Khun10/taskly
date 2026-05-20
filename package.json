@@ -1,0 +1,25 @@
+{
+  "name": "taskly",
+  "version": "1.0.0",
+  "description": "Simple task manager web app for CSE483 Assignment 3 - CI/CD with Jenkins on AWS EC2",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "jest --testPathPattern=tests/unit --detectOpenHandles --forceExit",
+    "test:selenium": "jest --testPathPattern=tests/selenium --detectOpenHandles --forceExit --testTimeout=60000"
+  },
+  "author": "Hassan (SP23-BSE-036)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "selenium-webdriver": "^4.20.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}

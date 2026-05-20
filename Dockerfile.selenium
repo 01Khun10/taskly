@@ -1,0 +1,30 @@
+# Dockerfile for running Selenium tests against a deployed Taskly instance.
+# Bundles Node + Chromium + Chromedriver so the image is self-contained.
+FROM node:18-bullseye-slim
+
+# Install Chromium and Chromedriver from the Debian repositories.
+# These two packages are kept in sync so selenium-webdriver finds a matching driver.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    chromium \
+    chromium-driver \
+    ca-certificates \
+    fonts-liberation \
+ && rm -rf /var/lib/apt/lists/*
+
+# Tell selenium-webdriver where to find the binaries
+ENV CHROME_BIN=/usr/bin/chromium
+ENV PATH="/usr/lib/chromium:${PATH}"
+
+WORKDIR /tests
+
+# Install only what's needed for the tests
+COPY package*.json ./
+RUN npm install
+
+# Copy test sources
+COPY tests ./tests
+
+# APP_URL is injected by Jenkins at run time so tests point at the deployed app
+ENV APP_URL=http://app:3000
+
+CMD ["npm", "run", "test:selenium"]
