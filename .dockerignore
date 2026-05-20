@@ -4,6 +4,5 @@ npm-debug.log
 .gitignore
 Jenkinsfile
 README.md
-test
 .DS_Store
 *.md
